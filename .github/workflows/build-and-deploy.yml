@@ -57,12 +57,6 @@ jobs:
     - name: Build
       run: make -e TARGET="${{ env.OUTPUT }}"
 
-    - name: Verify Build
-      run: |
-        file "${{ env.OUTPUT }}"
-        openssl dgst -sha256 "${{ env.OUTPUT }}" | tee bettercap_${{ matrix.target_os }}_${{ matrix.target_arch }}_${{ env.VERSION }}.sha256
-        7z a "bettercap_${{ matrix.target_os }}_${{ matrix.target_arch }}_${{ env.VERSION }}.zip" "${{ env.OUTPUT }}" "bettercap_${{ matrix.target_os }}_${{ matrix.target_arch }}_${{ env.VERSION }}.sha256"
-
   deploy:
     needs: [build]
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
@@ -78,6 +72,6 @@ jobs:
           uses: softprops/action-gh-release@v1
           with:
             files: |
-                bettercap.exe
+                bettercap_*.zip
     env:
         GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
