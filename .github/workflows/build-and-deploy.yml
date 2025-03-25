@@ -72,6 +72,6 @@ jobs:
           uses: softprops/action-gh-release@v1
           with:
             files: |
-                bettercap.exe
+                bettercap
     env:
         GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
