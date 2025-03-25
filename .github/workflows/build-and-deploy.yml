@@ -11,21 +11,9 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [windows-latest]
         go-version: ['1.22.x']
         include:
-          - os: ubuntu-latest
-            arch: amd64
-            target_os: linux
-            target_arch: amd64
-          - os: ubuntu-latest
-            arch: arm64
-            target_os: linux
-            target_arch: aarch64
-          - os: macos-latest
-            arch: arm64
-            target_os: darwin
-            target_arch: arm64
           - os: windows-latest
             arch: amd64
             target_os: windows
@@ -36,7 +24,7 @@ jobs:
       TARGET_OS: ${{ matrix.target_os }}
       TARGET_ARCH: ${{ matrix.target_arch }}
       GO_VERSION: ${{ matrix.go-version }}
-      OUTPUT: ${{ matrix.output || 'bettercap' }}
+      OUTPUT: ${{ 'bettercap' }}
 
     steps:
     - name: Checkout Code
@@ -46,16 +34,7 @@ jobs:
       uses: actions/setup-go@v2
       with:
         go-version: ${{ matrix.go-version }}
-
-    - name: Install Dependencies
-      if: ${{ matrix.os == 'ubuntu-latest' }}
-      run: sudo apt-get update && sudo apt-get install -y p7zip-full libpcap-dev libnetfilter-queue-dev libusb-1.0-0-dev
-
-    - name: Install Dependencies (macOS)
-      if: ${{ matrix.os == 'macos-latest' }}
-      run: brew install libpcap libusb p7zip
-
-
+        
     - name: Install libusb via mingw (Windows)
       if: ${{ matrix.os == 'windows-latest' }}
       uses: msys2/setup-msys2@v2
@@ -99,7 +78,6 @@ jobs:
           uses: softprops/action-gh-release@v1
           with:
             files: |
-                bettercap_*.zip
                 bettercap.exe
     env:
         GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
